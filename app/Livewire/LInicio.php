@@ -4,10 +4,10 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class LLogin extends Component
+class LInicio extends Component
 {
     public function render()
     {
-        return view('livewire.l-login');
+        return view('livewire.l-inicio');
     }
 }

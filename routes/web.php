@@ -4,11 +4,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
 
-Route::view('/Hola', 'layouts.login.login');
-
-Route::view('dashboard', 'dashboard')
+Route::view('/Inicio', 'Layouts.Inicio.Inicio')
   ->middleware(['auth', 'verified'])
-  ->name('dashboard');
+  ->name('INICIO');
 
 Route::view('profile', 'profile')
   ->middleware(['auth'])

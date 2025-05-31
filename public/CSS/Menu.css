@@ -1,0 +1,65 @@
+.navbar {
+    border-bottom: 4px solid var(--ColorSecundario); /* Thicker, vibrant bottom border */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: background-color 0.3s ease; /* Smooth transition for potential changes */
+}
+
+/* Brand Styling */
+.navbar-brand {
+    letter-spacing: 0.05em; /* Slightly wider letter spacing for brand name */
+    transition: color 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: var(--ColorSecundario) !important; /* Brand name turns yellow on hover */
+}
+
+.navbar-brand i {
+    transition: transform 0.3s ease; /* Smooth animation for the taco icon */
+}
+
+.navbar-brand:hover i {
+    transform: rotate(10deg) scale(1.1); /* Taco wiggles slightly on hover */
+}
+
+
+/* Navigation Links Styling */
+.navbar .nav-link {
+    font-weight: 600; /* Bolder font weight */
+    text-transform: uppercase; /* Uppercase for a stronger look */
+    letter-spacing: 0.03em; /* Slight letter spacing */
+    transition: color 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+    padding: 0.8rem 1.2rem !important; /* More generous padding */
+    border-radius: 8px; /* Slightly rounded corners for active/hover state */
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+    color: var(--ColorSecundario) !important;
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle white overlay on hover/active */
+    transform: translateY(-3px); /* More pronounced lift on hover */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow on lift */
+}
+
+/* Specific style for the toggler icon to make it white */
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Button Styling (Order Now / Sign In / Sign Out) */
+.navbar .btn {
+    padding: 0.6rem 1.2rem; /* Consistent padding */
+    border-radius: 50px; /* Fully rounded buttons */
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    border: none; /* No default Bootstrap border */
+}
+
+.navbar .btn:hover {
+    background-color: #1F8D4F !important; /* Darker accent on hover */
+    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow on hover */
+}
