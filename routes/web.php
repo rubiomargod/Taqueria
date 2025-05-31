@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome');
+Route::view('/', 'Layouts.Inicio.Inicio');
 
 Route::view('/Inicio', 'Layouts.Inicio.Inicio')
   ->middleware(['auth', 'verified'])
