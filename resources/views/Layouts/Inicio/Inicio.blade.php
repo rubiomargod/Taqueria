@@ -1,5 +1,5 @@
 @extends('App')
 @section('title','Inicio')
-@section('body')
-@livewire('l-Inicio')
+@section('auth-body')
+@livewire('Layouts.l-Inicio')
 @endsection

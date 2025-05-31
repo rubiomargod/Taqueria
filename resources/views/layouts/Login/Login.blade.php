@@ -1,5 +1,5 @@
 @extends('App')
 @section('title','Login')
-@section('body')
-@livewire('l-Login')
+@section('guest-body')
+@livewire('Layouts.l-Login')
 @endsection
