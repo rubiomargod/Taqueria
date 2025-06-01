@@ -29,14 +29,28 @@
           </a>
         </li>
         <!-- Botón SALIR -->
-        <li class="nav-item ms-lg-3">
-          <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="btn btn-sm" style="background-color: var(--ColorAcento); color: var(--TextoClaro); font-weight: bold;">
-              <i class="fas fa-sign-out-alt me-1"></i> Salir
-            </button>
-          </form>
+        <!-- Dropdown de Usuario -->
+        <li class="nav-item dropdown ms-lg-3">
+          <a class="nav-link dropdown-toggle btn btn-sm text-white fw-bold" href="#" id="userDropdown" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false"
+            style="background-color: var(--ColorAcento);">
+            <i class="fas fa-user-circle me-1"></i> Opciones
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li>
+              <a class="dropdown-item" href="{{ route('USUARIOS') }}">Restablecer contraseña</a> {{-- A futuro enlaza esto --}}
+            </li>
+            <li>
+              <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="dropdown-item">
+                  <i class="fas fa-sign-out-alt me-1"></i> Salir
+                </button>
+              </form>
+            </li>
+          </ul>
         </li>
+
         @else
         <!-- Opciones solo si NO está autenticado -->
         <li class="nav-item ms-lg-3">

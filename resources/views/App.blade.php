@@ -18,6 +18,7 @@
   @auth
   @yield('auth-body')
   @else
+  <h1>Hola</h1>
   @yield('guest-body')
   @endauth
 

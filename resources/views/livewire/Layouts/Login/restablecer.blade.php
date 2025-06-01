@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Password;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('layouts.guest')] class extends Component
+new #[Layout('Guest')] class extends Component
 {
   public string $email = '';
 
@@ -56,6 +56,9 @@ new #[Layout('layouts.guest')] class extends Component
 
       <!-- Botón -->
       <div class="d-grid mt-4">
+        <a href="javascript:history.back()" class="btn btn-outline-secondary">
+          <i class="fas fa-arrow-left me-1"></i> Volver atrás
+        </a>
         <button type="submit" class="btn" style="background-color: var(--ColorPrincipal); color: var(--TextoClaro); font-weight: bold;">
           Enviar enlace de recuperación
         </button>
