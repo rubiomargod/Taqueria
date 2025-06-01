@@ -29,7 +29,6 @@
           </a>
         </li>
         <!-- Botón SALIR -->
-        <!-- Dropdown de Usuario -->
         <li class="nav-item dropdown ms-lg-3">
           <a class="nav-link dropdown-toggle btn btn-sm text-white fw-bold" href="#" id="userDropdown" role="button"
             data-bs-toggle="dropdown" aria-expanded="false"

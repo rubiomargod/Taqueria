@@ -1,3 +1,0 @@
-<div>
-  Inicio
-</div>

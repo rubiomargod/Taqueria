@@ -1,3 +1,0 @@
-<div>
-  Usuarios
-</div>

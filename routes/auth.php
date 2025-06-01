@@ -6,16 +6,16 @@ use Livewire\Volt\Volt;
 use Illuminate\Support\Facades\Auth; // <-- Asegúrate de importar Auth
 
 Route::middleware('guest')->group(function () {
-  Volt::route('registrar', 'Layouts.Login.registrar')
+  Volt::route('registrar', 'Login.registrar')
     ->name('register');
 
-  Volt::route('login', 'Layouts.Login.login')
+  Volt::route('login', 'Login.login')
     ->name('login');
 
-  Volt::route('Restablecer Clave', 'Layouts.login.restablecer')
+  Volt::route('Restablecer Clave', 'login.restablecer')
     ->name('password.request');
 
-  Volt::route('Resetear Clave/{token}', 'Layouts.login.resetear')
+  Volt::route('Resetear Clave/{token}', 'login.resetear')
     ->name('password.reset');
 });
 
