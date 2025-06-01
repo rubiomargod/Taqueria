@@ -8,8 +8,8 @@ Route::view('/Inicio', 'Layouts.Inicio.Inicio')
   ->middleware(['auth', 'verified'])
   ->name('INICIO');
 
-Route::view('profile', 'profile')
-  ->middleware(['auth'])
-  ->name('profile');
+Route::view('/Usuarios', 'Layouts.Usuarios.Usuarios')
+  ->middleware(['auth', 'verified'])
+  ->name('USUARIOS');
 
 require __DIR__ . '/auth.php';
