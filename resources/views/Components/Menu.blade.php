@@ -28,6 +28,12 @@
             <i class="fas fa-users me-1"></i> Usuarios
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link {{ request()->routeIs('Productos') ? 'active' : '' }}" href="{{ route('Productos') }}"
+            style="color: var(--TextoClaro);">
+            <i class="fas fa-users me-1"></i> Productos
+          </a>
+        </li>
         <!-- Botón SALIR -->
         <li class="nav-item dropdown ms-lg-3">
           <a class="nav-link dropdown-toggle btn btn-sm text-white fw-bold" href="#" id="userDropdown" role="button"
