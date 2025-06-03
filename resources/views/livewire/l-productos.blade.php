@@ -28,7 +28,6 @@
         <th class="border p-2">Precio</th>
         <th class="border p-2">Categoría</th>
         <th class="border p-2">Stock</th>
-        <th class="border p-2">Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -38,15 +37,10 @@
         <td class="border p-2">${{ number_format($producto->precio, 2) }}</td>
         <td class="border p-2">{{ $producto->categoria->nombre ?? 'Sin categoría' }}</td>
         <td class="border p-2">{{ $producto->stock }}</td>
-        <td class="border p-2 text-center">
-          <button wire:click="editarProducto({{ $producto->id }})" class="bg-yellow-500 text-white px-3 py-1 rounded">
-            Editar
-          </button>
-        </td>
       </tr>
       @empty
       <tr>
-        <td colspan="5" class="border p-2 text-center">No hay productos encontrados.</td>
+        <td colspan="4" class="border p-2 text-center">No hay productos encontrados.</td>
       </tr>
       @endforelse
     </tbody>
@@ -61,7 +55,9 @@
 
       Livewire.on('CerrarNuevoProducto', () => {
         let modal = bootstrap.Modal.getInstance(document.getElementById('ModalNuevoProducto'));
-        if (modal) modal.hide();
+        if (modal) {
+          modal.hide();
+        }
       });
     });
   </script>
@@ -71,8 +67,7 @@
       <div class="modal-content shadow-lg rounded-4">
         <div class="modal-header border-0">
           <h5 class="modal-title fw-bold">
-            <i class="bi bi-box-seam-fill me-2"></i>
-            {{ $productoId ? 'Editar Producto' : 'Nuevo Producto' }}
+            <i class="bi bi-box-seam-fill me-2"></i> Nuevo Producto
           </h5>
           <button type="button" class="btn-close" wire:click="cerrarModal"></button>
         </div>
@@ -101,6 +96,28 @@
                   @endforeach
                 </select>
                 @error('id_categoria') <small class="text-danger">{{ $message }}</small> @enderror
+
+                <div class="mt-2">
+                  <button type="button" class="btn btn-link p-0" wire:click="$set('agregandoCategoria', true)">
+                    + Nueva categoría
+                  </button>
+                </div>
+
+                @if($agregandoCategoria)
+                <div class="mt-2">
+                  <input type="text" wire:model.defer="nuevaCategoria" class="form-control mb-1" placeholder="Nombre de la categoría">
+                  @error('nuevaCategoria') <small class="text-danger">{{ $message }}</small> @enderror
+
+                  <div class="d-flex gap-2 mt-1">
+                    <button type="button" wire:click="guardarNuevaCategoria" class="btn btn-sm btn-success">
+                      Guardar categoría
+                    </button>
+                    <button type="button" wire:click="$set('agregandoCategoria', false)" class="btn btn-sm btn-secondary">
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
+                @endif
               </div>
 
               <div class="col-md-6">
@@ -112,10 +129,9 @@
           </div>
 
           <div class="modal-footer border-0">
-            <button type="button" class="btn btn-secondary" wire:click="cerrarModal">Cancelar</button>
-            <button type="submit" class="btn btn-primary px-4">
-              <i class="bi bi-save me-1"></i>
-              {{ $productoId ? 'Actualizar' : 'Guardar' }}
+            <button type="button" class="btn btn-custom-secondary" wire:click="cerrarModal">Cancelar</button>
+            <button type="submit" class="btn btn-custom-primary px-4">
+              <i class="bi bi-save me-1"></i> Guardar
             </button>
           </div>
         </form>

@@ -11,6 +11,9 @@ class LProductos extends Component
   public $productos = [];
   public $categorias = [];
   public $categoriaSeleccionada = '';
+  public $nuevaCategoria = '';
+  public $agregandoCategoria = false;
+
 
   public $nombre, $precio, $id_categoria, $stock;
   public $productoId = null;
@@ -84,6 +87,21 @@ class LProductos extends Component
 
     $this->cerrarModal();
     $this->cargarProductos();
+  }
+  public function guardarNuevaCategoria()
+  {
+    $this->validate([
+      'nuevaCategoria' => 'required|string|max:100|unique:categorias,nombre',
+    ]);
+
+    $categoria = Categoria::create([
+      'nombre' => $this->nuevaCategoria,
+    ]);
+
+    $this->categorias = Categoria::all(); // Recarga lista
+    $this->id_categoria = $categoria->id; // Selecciona automáticamente
+    $this->nuevaCategoria = '';
+    $this->agregandoCategoria = false;
   }
 
   public function render()
