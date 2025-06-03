@@ -28,6 +28,7 @@
         <th class="border p-2">Precio</th>
         <th class="border p-2">Categoría</th>
         <th class="border p-2">Stock</th>
+        <th class="border p-2">Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -37,20 +38,26 @@
         <td class="border p-2">${{ number_format($producto->precio, 2) }}</td>
         <td class="border p-2">{{ $producto->categoria->nombre ?? 'Sin categoría' }}</td>
         <td class="border p-2">{{ $producto->stock }}</td>
+        <td class="border p-2 text-center">
+          <button wire:click="editarProducto({{ $producto->id }})" class="bg-yellow-500 text-white px-3 py-1 rounded">
+            Editar
+          </button>
+        </td>
       </tr>
       @empty
       <tr>
-        <td colspan="4" class="border p-2 text-center">No hay productos encontrados.</td>
+        <td colspan="5" class="border p-2 text-center">No hay productos encontrados.</td>
       </tr>
       @endforelse
     </tbody>
   </table>
 
-  {{-- MODAL --}}
   @if($showModal)
   <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
-      <h3 class="text-lg font-bold mb-4">Nuevo Producto</h3>
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <h3 class="text-lg font-bold mb-4">
+        {{ $productoId ? 'Editar Producto' : 'Nuevo Producto' }}
+      </h3>
 
       <div class="mb-3">
         <label class="block text-sm font-medium">Nombre</label>
@@ -86,7 +93,7 @@
           Cancelar
         </button>
         <button wire:click="guardarProducto" class="px-4 py-2 bg-blue-600 text-white rounded">
-          Guardar
+          {{ $productoId ? 'Actualizar' : 'Guardar' }}
         </button>
       </div>
     </div>
