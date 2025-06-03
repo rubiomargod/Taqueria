@@ -23,6 +23,18 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="{{ route('INICIO') }}"
+            style="color: var(--TextoClaro);">
+            <i class="fas fa-users me-1"></i> Carta
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ route('INICIO') }}"
+            style="color: var(--TextoClaro);">
+            <i class="fas fa-users me-1"></i> Comandas
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('USUARIOS') ? 'active' : '' }}" href="{{ route('USUARIOS') }}"
             style="color: var(--TextoClaro);">
             <i class="fas fa-users me-1"></i> Usuarios
