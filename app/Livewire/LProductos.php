@@ -38,7 +38,11 @@ class LProductos extends Component
   public function abrirModal()
   {
     $this->reset(['nombre', 'precio', 'id_categoria', 'stock']);
-    $this->showModal = true;
+    $this->dispatch('AbrirNuevoProducto');
+  }
+  public function cerrarModal()
+  {
+    $this->dispatch('CerrarNuevoProducto');
   }
 
   public function guardarProducto()

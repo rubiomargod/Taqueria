@@ -46,50 +46,78 @@
     </tbody>
   </table>
 
-  {{-- MODAL --}}
-  @if($showModal)
-  <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
-      <h3 class="text-lg font-bold mb-4">Nuevo Producto</h3>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Listener para abrir el modal de nuevo producto
+      Livewire.on('AbrirNuevoProducto', () => {
+        // Crea una nueva instancia del modal de Bootstrap
+        let modal = new bootstrap.Modal(document.getElementById('ModalNuevoProducto'));
+        modal.show(); // Muestra el modal
+      });
 
-      <div class="mb-3">
-        <label class="block text-sm font-medium">Nombre</label>
-        <input type="text" wire:model.defer="nombre" class="w-full p-2 border rounded">
-        @error('nombre') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-      </div>
+      // Listener para cerrar el modal de nuevo producto
+      Livewire.on('CerrarNuevoProducto', () => {
+        // Obtiene la instancia existente del modal de Bootstrap
+        let modal = bootstrap.Modal.getInstance(document.getElementById('ModalNuevoProducto'));
+        if (modal) { // Verifica si la instancia existe antes de intentar ocultarla
+          modal.hide(); // Oculta el modal
+        }
+      });
+    });
+  </script>
 
-      <div class="mb-3">
-        <label class="block text-sm font-medium">Precio</label>
-        <input type="number" wire:model.defer="precio" step="0.01" class="w-full p-2 border rounded">
-        @error('precio') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-      </div>
+  <div class="modal fade" id="ModalNuevoProducto" tabindex="-1" aria-labelledby="ModalNuevoProductoLabel" aria-hidden="true" wire:ignore.self>
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content shadow-lg rounded-4">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold">
+            <i class="bi bi-box-seam-fill me-2"></i> Nuevo Producto
+          </h5>
+          <button type="button" class="btn-close" wire:click="cerrarModal"></button>
+        </div>
 
-      <div class="mb-3">
-        <label class="block text-sm font-medium">Categoría</label>
-        <select wire:model.defer="id_categoria" class="w-full p-2 border rounded">
-          <option value="">-- Selecciona --</option>
-          @foreach($categorias as $cat)
-          <option value="{{ $cat->id }}">{{ $cat->nombre }}</option>
-          @endforeach
-        </select>
-        @error('id_categoria') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-      </div>
+        <form wire:submit.prevent="guardarProducto">
+          <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Nombre</label>
+                <input type="text" wire:model.defer="nombre" class="form-control" placeholder="Ej. Camisa">
+                @error('nombre') <small class="text-danger">{{ $message }}</small> @enderror
+              </div>
 
-      <div class="mb-4">
-        <label class="block text-sm font-medium">Stock</label>
-        <input type="number" wire:model.defer="stock" class="w-full p-2 border rounded">
-        @error('stock') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-      </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Precio</label>
+                <input type="number" wire:model.defer="precio" step="0.01" class="form-control" placeholder="Ej. 29.99">
+                @error('precio') <small class="text-danger">{{ $message }}</small> @enderror
+              </div>
 
-      <div class="flex justify-end gap-2">
-        <button wire:click="$set('showModal', false)" class="px-4 py-2 bg-gray-300 rounded">
-          Cancelar
-        </button>
-        <button wire:click="guardarProducto" class="px-4 py-2 bg-blue-600 text-white rounded">
-          Guardar
-        </button>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Categoría</label>
+                <select wire:model.defer="id_categoria" class="form-select">
+                  <option value="">-- Selecciona --</option>
+                  @foreach($categorias as $cat)
+                  <option value="{{ $cat->id }}">{{ $cat->nombre }}</option>
+                  @endforeach
+                </select>
+                @error('id_categoria') <small class="text-danger">{{ $message }}</small> @enderror
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Stock</label>
+                <input type="number" wire:model.defer="stock" class="form-control" placeholder="Ej. 100">
+                @error('stock') <small class="text-danger">{{ $message }}</small> @enderror
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer border-0">
+            <button type="button" class="btn btn-custom-secondary" wire:click="cerrarModal">Cancelar</button>
+            <button type="submit" class="btn btn-custom-primary px-4">
+              <i class="bi bi-save me-1"></i> Guardar
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
-  @endif
 </div>
