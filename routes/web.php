@@ -16,4 +16,8 @@ Route::view('/Productos', 'Layouts.Productos.Productos')
   ->middleware(['auth', 'verified'])
   ->name('Productos');
 
+Route::view('/Comanda', 'Layouts.Comanda.Comanda')
+  ->middleware(['auth', 'verified'])
+  ->name('Comanda');
+
 require __DIR__ . '/auth.php';

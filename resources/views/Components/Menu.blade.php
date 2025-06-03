@@ -29,7 +29,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('INICIO') }}"
+          <a class="nav-link" href="{{ route('Comanda') }}"
             style="color: var(--TextoClaro);">
             <i class="fas fa-users me-1"></i> Comandas
           </a>
