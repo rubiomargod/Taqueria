@@ -16,6 +16,10 @@ Route::view('/Productos', 'Layouts.Productos.Productos')
   ->middleware(['auth', 'verified'])
   ->name('Productos');
 
+Route::view('/Ventas', 'Layouts.Ventas.Ventas')
+  ->middleware(['auth', 'verified'])
+  ->name('Ventas');
+
 Route::view('/Comanda', 'Layouts.Comanda.Comanda')
   ->middleware(['auth', 'verified'])
   ->name('Comanda');

@@ -42,6 +42,12 @@
               <i class="bi bi-box-seam-fill me-1"></i> Productos
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('Ventas') ? 'active' : '' }}" href="{{ route('Ventas') }}"
+              style="color: var(--TextoClaro);">
+              <i class="bi bi-currency-dollar me-1"></i> Ventas
+            </a>
+          </li>
           @endif
           <li class="nav-item dropdown ms-lg-3">
             <a class="nav-link dropdown-toggle btn btn-sm text-white fw-bold" href="#" id="userDropdown" role="button"
