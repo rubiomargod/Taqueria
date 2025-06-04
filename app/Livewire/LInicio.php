@@ -2,20 +2,20 @@
 
 namespace App\Livewire;
 
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class LInicio extends Component
 {
+  public $userName;
+
+  public function mount()
+  {
+    $this->userName = Auth::user()->name ?? 'Invitado';
+  }
+
   public function render()
   {
     return view('livewire.l-inicio');
-  }
-  public function Error()
-  {
-    return redirect()->route('INICIO')->with('error', 'Error');
-  }
-  public function Aceptar()
-  {
-    return redirect()->route('INICIO')->with('success', 'Bien');
   }
 }
