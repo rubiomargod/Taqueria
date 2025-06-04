@@ -2,6 +2,14 @@
   <h2 class="h3 fw-bold mb-5 text-center" style="color: var(--TextoOscuro);">
     <i class="bi bi-journal-check me-2" style="color: var(--ColorPrincipal);"></i> Listado de Comandas
   </h2>
+  <!-- Botón para agregar nueva comanda -->
+  <div class="mb-4 text-center">
+    <button wire:click="AbrirModalComanda"
+      class="btn btn-success"
+      style="background-color: var(--ColorAcento); border-color: var(--ColorAcento); color: var(--TextoClaro);">
+      <i class="bi bi-plus-circle me-1"></i> Nueva Comanda
+    </button>
+  </div>
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
     @forelse($comandas as $comanda)
     <div class="col">
@@ -23,9 +31,15 @@
             <button wire:click="AbrirModalDetalles({{ $comanda->id }})" class="btn btn-primary btn-sm" style="background-color: var(--ColorPrincipal); border-color: var(--ColorPrincipal); color: var(--TextoClaro);">
               <i class="bi bi-eye-fill me-1"></i> Ver Detalles
             </button>
-            <button wire:click="cerrarVenta({{ $comanda->id }})" class="btn btn-success btn-sm" style="background-color: var(--ColorAcento); border-color: var(--ColorAcento); color: var(--TextoClaro);">
+            @auth
+            @if (in_array(auth()->user()->role, ['Cajero', 'Administrador']))
+            <button wire:click="cerrarVenta({{ $comanda->id }})"
+              class="btn btn-success btn-sm"
+              style="background-color: var(--ColorAcento); border-color: var(--ColorAcento); color: var(--TextoClaro);">
               <i class="bi bi-check-circle-fill me-1"></i> Cerrar Venta
             </button>
+            @endif
+            @endauth
           </div>
         </div>
       </div>
@@ -172,9 +186,9 @@
 
         <div class="modal-body">
           <p style="color: var(--TextoOscuro);">
-            <strong>Mesero:</strong> {{ $meseroNombre }} <br>
-            <strong>Mesa:</strong> #{{ $mesaNumero }} <br>
-            <strong>Fecha:</strong> {{ $comandaFecha }}
+            <strong>Mesero:</strong> {{ $meseroNombre ?? 'Cargando...' }}<br>
+            <strong>Mesa:</strong> # Mesa {{ $mesaNumero ?? 'Cargando...' }} <br>
+            <strong>Fecha:</strong> {{ $comandaFecha ?? 'Cargando...' }}
           </p>
 
           <table class="table table-sm table-borderless">
@@ -222,4 +236,44 @@
       });
     });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      Livewire.on('AbrirModalComanda', () => {
+        new bootstrap.Modal(document.getElementById('ModalComanda')).show();
+      });
+      Livewire.on('CerrarModalComanda', () => {
+        let modal = bootstrap.Modal.getInstance(document.getElementById('ModalComanda'));
+        modal.hide();
+      });
+    });
+  </script>
+  <!-- Modal para agregar nueva comanda -->
+  <div wire:ignore.self class="modal fade" id="ModalComanda" tabindex="-1" aria-labelledby="ModalComandaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form wire:submit.prevent="crearComanda" class="modal-content">
+        <div class="modal-header" style="background-color: var(--ColorPrincipal); color: var(--TextoClaro);">
+          <h5 class="modal-title" id="ModalComandaLabel">Nueva Comanda</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body" style="background-color: var(--TextoClaro); color: var(--TextoOscuro);">
+          <!-- Aquí puedes agregar los campos que necesites para crear una comanda -->
+          <div class="mb-3">
+            <label for="mesaSeleccionada" class="form-label">Mesa</label>
+            <select wire:model="mesaSeleccionada" id="mesaSeleccionada" class="form-select" required>
+              <option value="">Seleccione una mesa</option>
+              @foreach(\App\Models\Mesa::all() as $mesa)
+              <option value="{{ $mesa->id }}">Mesa #{{ $mesa->numero }}</option>
+              @endforeach
+            </select>
+            @error('mesaSeleccionada') <small class="text-danger">{{ $message }}</small> @enderror
+          </div>
+          <!-- Puedes agregar más campos si la comanda requiere más datos -->
+        </div>
+        <div class="modal-footer" style="background-color: var(--TextoClaro);">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" style="background-color: var(--ColorAcento); border-color: var(--ColorAcento);">Crear Comanda</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
