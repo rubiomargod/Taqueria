@@ -247,33 +247,64 @@
       });
     });
   </script>
-  <!-- Modal para agregar nueva comanda -->
-  <div wire:ignore.self class="modal fade" id="ModalComanda" tabindex="-1" aria-labelledby="ModalComandaLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <form wire:submit.prevent="crearComanda" class="modal-content">
-        <div class="modal-header" style="background-color: var(--ColorPrincipal); color: var(--TextoClaro);">
-          <h5 class="modal-title" id="ModalComandaLabel">Nueva Comanda</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+  <div class="modal fade" id="ModalComanda" tabindex="-1" aria-labelledby="ModalComandaLabel" aria-hidden="true" wire:ignore.self>
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow-lg rounded-4">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold" style="color: var(--TextoOscuro);">
+            <i class="bi bi-receipt-cutoff me-2" style="color: var(--ColorPrincipal);"></i>
+            Nueva Comanda
+          </h5>
+          <button type="button" class="btn-close" wire:click="CerrarModalComanda"></button>
         </div>
-        <div class="modal-body" style="background-color: var(--TextoClaro); color: var(--TextoOscuro);">
-          <!-- Aquí puedes agregar los campos que necesites para crear una comanda -->
-          <div class="mb-3">
-            <label for="mesaSeleccionada" class="form-label">Mesa</label>
-            <select wire:model="mesaSeleccionada" id="mesaSeleccionada" class="form-select" required>
-              <option value="">Seleccione una mesa</option>
-              @foreach(\App\Models\Mesa::all() as $mesa)
-              <option value="{{ $mesa->id }}">Mesa #{{ $mesa->numero }}</option>
-              @endforeach
-            </select>
-            @error('mesaSeleccionada') <small class="text-danger">{{ $message }}</small> @enderror
+
+        <form wire:submit.prevent="crearComanda">
+          <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label fw-semibold" style="color: var(--TextoOscuro);">Mesa</label>
+                <select wire:model.defer="mesaSeleccionada" class="form-select">
+                  <option value="">-- Selecciona una mesa --</option>
+                  @foreach($mesasDisponibles as $mesa)
+                  <option value="{{ $mesa->id }}">Mesa #{{ $mesa->numero }}</option>
+                  @endforeach
+                </select>
+                @error('mesaSeleccionada') <small class="text-danger">{{ $message }}</small> @enderror
+
+                <div class="mt-2">
+                  <button type="button" class="btn btn-link p-0 text-decoration-none fw-semibold"
+                    style="color: var(--ColorPrincipal);"
+                    wire:click="$set('agregandoMesa', true)">
+                    <i class="bi bi-plus-circle me-1"></i> ¿Añadir nueva mesa?
+                  </button>
+                </div>
+
+                @if($agregandoMesa)
+                <div class="input-group mt-2">
+                  <input type="number" wire:model.defer="nuevoNumeroMesa" class="form-control" placeholder="Número de la nueva mesa">
+                  <button type="button" wire:click="guardarNuevaMesa" class="btn btn-success" style="background-color: var(--ColorAcento); color: var(--TextoClaro);">
+                    <i class="bi bi-plus-circle me-1"></i> Añadir
+                  </button>
+                  <button type="button" wire:click="$set('agregandoMesa', false)" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle"></i>
+                  </button>
+                </div>
+                @error('nuevoNumeroMesa') <small class="text-danger mt-1 d-block">{{ $message }}</small> @enderror
+                @endif
+              </div>
+            </div>
           </div>
-          <!-- Puedes agregar más campos si la comanda requiere más datos -->
-        </div>
-        <div class="modal-footer" style="background-color: var(--TextoClaro);">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary" style="background-color: var(--ColorAcento); border-color: var(--ColorAcento);">Crear Comanda</button>
-        </div>
-      </form>
+
+          <div class="modal-footer border-0">
+            <button type="button" class="btn btn-secondary" style="background-color: var(--ColorSecundario); color: var(--TextoOscuro);" wire:click="CerrarModalComanda">
+              <i class="bi bi-x-circle-fill me-1"></i> Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary px-4" style="background-color: var(--ColorAcento); color: var(--TextoClaro);">
+              <i class="bi bi-save-fill me-1"></i> Crear Comanda
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>

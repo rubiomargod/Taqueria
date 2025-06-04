@@ -2,23 +2,44 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Comanda;
-use App\Models\Producto;
 use App\Models\ComandaDetalle;
+use App\Models\Mesa;
+use App\Models\Producto;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
+use Livewire\Component;
 
 class LComanda extends Component
 {
-  public $comandas, $comandaId, $cantidad, $idProducto;
+  public $comandas, $comandaId, $cantidad, $idProducto, $mesas;
   public $meseroNombre, $mesaNumero, $comandaFecha;
   public $productosDisponibles, $comandaDetalles = [];
   public $totalVenta = 0;
 
-  // Propiedades para crear nueva comanda
   public $mesaSeleccionada;
+  public $agregandoMesa = false;
+  public $nuevoNumeroMesa;
+  public $mesasDisponibles = [];
 
   public function mount()
+  {
+    $this->loadComandas();
+    $this->loadMesas();
+  }
+
+  public function render()
+  {
+    $this->productosDisponibles = Producto::all();
+
+    if ($this->comandaId) {
+      $this->cargarDetallesComanda();
+    }
+
+    return view('livewire.l-comanda');
+  }
+
+  public function loadComandas()
   {
     $user = Auth::user();
     $query = Comanda::with(['mesero', 'mesa']);
@@ -28,37 +49,37 @@ class LComanda extends Component
     $this->comandas = $query->latest('fecha')->get();
   }
 
-  public function render()
+  public function loadMesas()
   {
-    $this->productosDisponibles = Producto::all();
-
-    if ($this->comandaId) {
-      $comanda = Comanda::with('detalles.producto')->find($this->comandaId);
-      $this->comandaDetalles = $comanda->detalles->map(function ($detalle) {
-        return [
-          'id' => $detalle->id,
-          'producto_id' => $detalle->producto_id,
-          'nombre' => $detalle->producto->nombre ?? 'N/A',
-          'precio' => $detalle->producto->precio ?? 0,
-          'cantidad' => $detalle->cantidad,
-        ];
-      })->toArray();
-    }
-
-    return view('livewire.l-comanda', [
-      'comandas' => $this->comandas,
-    ]);
+    $this->mesasDisponibles = Mesa::all();
   }
 
-  public function AbrirModalDetalles($ID)
+  public function AbrirModalDetalles($id)
   {
-    $comanda = Comanda::with('mesero', 'mesa')->findOrFail($ID);
+    $comanda = Comanda::with('mesero', 'mesa')->findOrFail($id);
     $this->comandaId = $comanda->id;
     $this->meseroNombre = $comanda->mesero->name ?? 'N/A';
     $this->mesaNumero = $comanda->mesa->numero ?? 'N/A';
     $this->comandaFecha = $comanda->fecha;
     $this->cargarDetallesComanda();
     $this->dispatch('AbrirModalDetalles');
+  }
+
+  public function cargarDetallesComanda()
+  {
+    $comanda = Comanda::with('detalles.producto')->find($this->comandaId);
+
+    $this->comandaDetalles = $comanda->detalles->map(function ($detalle) {
+      return [
+        'id' => $detalle->id,
+        'producto_id' => $detalle->producto_id,
+        'nombre' => $detalle->producto->nombre ?? 'N/A',
+        'precio' => $detalle->precio_unitario ?? $detalle->producto->precio ?? 0,
+        'cantidad' => $detalle->cantidad,
+      ];
+    })->toArray();
+
+    $this->totalVenta = collect($this->comandaDetalles)->sum(fn($d) => $d['cantidad'] * $d['precio']);
   }
 
   public function agregarDetalleProducto()
@@ -75,25 +96,13 @@ class LComanda extends Component
       return;
     }
 
-    $detalleExistente = ComandaDetalle::where('id_comanda', $this->comandaId)
-      ->where('id_producto', $producto->id)
-      ->first();
+    $detalle = ComandaDetalle::firstOrCreate(
+      ['id_comanda' => $this->comandaId, 'id_producto' => $producto->id],
+      ['precio_unitario' => $producto->precio, 'cantidad' => 0]
+    );
 
-    if ($detalleExistente) {
-      $detalleExistente->update([
-        'cantidad' => $detalleExistente->cantidad + $this->cantidad
-      ]);
-    } else {
-      ComandaDetalle::create([
-        'id_comanda' => $this->comandaId,
-        'id_producto' => $producto->id,
-        'cantidad' => $this->cantidad,
-        'precio_unitario' => $producto->precio,
-      ]);
-    }
-
-    $producto->stock -= $this->cantidad;
-    $producto->save();
+    $detalle->increment('cantidad', $this->cantidad);
+    $producto->decrement('stock', $this->cantidad);
 
     $this->reset(['idProducto', 'cantidad']);
     $this->cargarDetallesComanda();
@@ -102,78 +111,35 @@ class LComanda extends Component
   public function eliminarDetalleProducto($detalleId)
   {
     $detalle = ComandaDetalle::find($detalleId);
-
-    if (!$detalle) return;
-
-    $producto = Producto::find($detalle->id_producto);
-    if ($producto) {
-      $producto->stock += $detalle->cantidad;
-      $producto->save();
-    }
-
-    $detalle->delete();
-    $this->cargarDetallesComanda();
-  }
-
-  public function cargarDetallesComanda()
-  {
-    if ($this->comandaId) {
-      $comanda = Comanda::with('detalles.producto')->find($this->comandaId);
-
-      $this->comandaDetalles = $comanda->detalles->map(function ($detalle) {
-        return [
-          'id' => $detalle->id,
-          'producto_id' => $detalle->producto_id,
-          'nombre' => $detalle->producto->nombre ?? 'N/A',
-          'precio' => $detalle->precio_unitario ?? $detalle->producto->precio ?? 0,
-          'cantidad' => $detalle->cantidad,
-        ];
-      })->toArray();
-
-      $this->totalVenta = collect($this->comandaDetalles)->sum(fn($d) => $d['cantidad'] * $d['precio']);
+    if ($detalle) {
+      Producto::where('id', $detalle->id_producto)->increment('stock', $detalle->cantidad);
+      $detalle->delete();
+      $this->cargarDetallesComanda();
     }
   }
 
   public function cerrarVenta($id)
   {
-    $comanda = Comanda::with('mesero', 'mesa')->findOrFail($id);
-    $this->comandaId = $comanda->id;
-    $this->meseroNombre = $comanda->mesero->name ?? 'N/A';
-    $this->mesaNumero = $comanda->mesa->numero ?? 'N/A';
-    $this->comandaFecha = $comanda->fecha;
-    $this->cargarDetallesComanda();
-
-    $this->totalVenta = collect($this->comandaDetalles)->sum(fn($d) => $d['cantidad'] * $d['precio']);
-
+    $this->AbrirModalDetalles($id);
     $this->dispatch('AbrirModalVenta');
-  }
-
-  public function CerrarModalDetalles()
-  {
-    $this->reset(['comandaId', 'meseroNombre', 'mesaNumero', 'comandaFecha', 'comandaDetalles']);
-    $this->dispatch('CerrarModalDetalles');
   }
 
   public function confirmarVenta()
   {
-    // Aquí podrías implementar la lógica para registrar la venta, marcar la comanda como cerrada, etc.
-    // Por ejemplo:
-    // Ventas::create([...]);
-
     $this->dispatch('CerrarModalVenta');
     $this->reset(['comandaId', 'meseroNombre', 'mesaNumero', 'comandaFecha', 'comandaDetalles', 'totalVenta']);
-
-    // Recargar comandas para reflejar cambios
-    $this->comandas = Comanda::with(['mesero', 'mesa'])->latest('fecha')->get();
+    $this->loadComandas();
   }
 
-  // Nuevo método para crear una comanda nueva
   public function crearComanda()
   {
-    $user = Auth::user();
+    $this->validate([
+      'mesaSeleccionada' => 'required|exists:mesas,id',
+    ]);
+
     $comanda = Comanda::create([
-      'id_mesero' => $user->id,
-      'id_mesa' => $this->mesaSeleccionada ?? null,
+      'id_mesero' => Auth::id(),
+      'id_mesa' => $this->mesaSeleccionada,
       'fecha' => now(),
       'estado' => 'abierta',
     ]);
@@ -183,12 +149,43 @@ class LComanda extends Component
     $this->AbrirModalDetalles($comanda->id);
     $this->mesaSeleccionada = null;
   }
-  public function  AbrirModalComanda()
+
+  public function guardarNuevaMesa()
+  {
+    $this->validate([
+      'nuevoNumeroMesa' => [
+        'required',
+        'numeric',
+        'min:1',
+        Rule::unique('mesas', 'numero')
+      ],
+    ]);
+
+    $mesa = Mesa::create([
+      'numero' => $this->nuevoNumeroMesa,
+    ]);
+
+    $this->loadMesas();
+    $this->mesaSeleccionada = $mesa->id;
+    $this->nuevoNumeroMesa = '';
+    $this->agregandoMesa = false;
+    $this->resetValidation('nuevoNumeroMesa');
+  }
+
+  public function AbrirModalComanda()
   {
     $this->dispatch('AbrirModalComanda');
   }
+
+
   public function CerrarModalComanda()
   {
     $this->dispatch('CerrarModalComanda');
+  }
+
+  public function CerrarModalDetalles()
+  {
+    $this->reset(['comandaId', 'meseroNombre', 'mesaNumero', 'comandaFecha', 'comandaDetalles']);
+    $this->dispatch('CerrarModalDetalles');
   }
 }
