@@ -42,8 +42,8 @@
     @endif
 
     <div class="table-responsive">
-      <table class="table table-striped table-hover shadow-sm rounded-3 overflow-hidden">
-        <thead class="table-dark">
+      <table class="table table-hover table-bordered shadow-sm">
+        <thead style="background-color: var(--ColorPrincipal); color: var(--TextoClaro);">
           <tr>
             <th scope="col">Nombre</th>
             <th scope="col">Precio</th>

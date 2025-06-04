@@ -17,31 +17,4 @@
     background-size: cover;
   }
 
-   html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: var(--FondoBase) !important;
-  }
-
-  .login-wrapper {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .login-card {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    width: 100%;
-    max-width: 500px;
-  }
-
-  .btn-spacing {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-  }
+  
