@@ -68,38 +68,38 @@ class LComanda extends Component
 
     $producto = Producto::findOrFail($this->idProducto);
 
-    // Verificar stock
-    if ($producto->stock < $this->cantidad) {
+    // Verificar si hay suficiente stock disponible en este momento
+    if ($this->cantidad > $producto->stock) {
       $this->addError('cantidad', 'No hay suficiente stock disponible.');
       return;
     }
 
-    // Verificar si ya existe un detalle con ese producto
-    $detalleExistente = ComandaDetalle::where('id', $this->comandaId)
+    $detalleExistente = ComandaDetalle::where('id_comanda', $this->comandaId)
       ->where('id_producto', $producto->id)
       ->first();
 
-
     if ($detalleExistente) {
-      $nuevaCantidad = $detalleExistente->cantidad + $this->cantidad;
-
-      if ($nuevaCantidad > $producto->stock) {
-        $this->addError('cantidad', 'No puedes agregar más de lo que hay en stock.');
-        return;
-      }
-
-      $detalleExistente->update(['cantidad' => $nuevaCantidad]);
+      // Si hay suficiente stock, simplemente actualizamos la cantidad
+      $detalleExistente->update([
+        'cantidad' => $detalleExistente->cantidad + $this->cantidad
+      ]);
     } else {
       ComandaDetalle::create([
-        'id_comanda' => $this->comandaId,  // <--- Esto es obligatorio
+        'id_comanda' => $this->comandaId,
         'id_producto' => $producto->id,
         'cantidad' => $this->cantidad,
         'precio_unitario' => $producto->precio,
       ]);
     }
 
+    // Descontar del stock disponible
+    $producto->stock -= $this->cantidad;
+    $producto->save();
+
     $this->reset(['idProducto', 'cantidad']);
   }
+
+
 
   public function eliminarDetalleProducto($detalleId)
   {
