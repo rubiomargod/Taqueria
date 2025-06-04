@@ -20,9 +20,8 @@
   @auth
   @yield('auth-body')
   @else
-  <div>
-    <img src="{{ asset('IMG/Banner.png') }}" alt="">
-  </div>
+  <div class="banner"></div>
+
   @yield('guest-body')
   @endauth
 

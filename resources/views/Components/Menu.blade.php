@@ -2,8 +2,11 @@
   <nav class="navbar navbar-expand-lg py-3 sticky-top shadow-sm" style="background-color: var(--ColorPrincipal);">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center" href="" style="color: var(--TextoClaro); font-weight: bold;">
-        <i class="bi bi-egg-fried me-2" style="font-size: 1.8rem; color: var(--ColorSecundario);"></i>
-        <span style="font-size: 1.6rem;">La Taquería Deliciosa</span>
+        <div style="display: flex; align-items: center; padding: 20px;">
+          <img src="{{ asset('IMG/Taquito.png') }}" alt="Logo Taco" style="height: 60px; margin-right: 15px;">
+          <h1 style="color: white; font-size: 32px; margin: 0;">EL TACO LOCO</h1>
+        </div>
+
       </a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -45,11 +48,11 @@
               <i class="bi bi-person-circle me-1"></i> Opciones
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-              <!-- <li>
+              <li>
                 <a class="dropdown-item" href="{{ route('USUARIOS') }}">
                   <i class="bi bi-key-fill me-1"></i> Restablecer contraseña
                 </a> {{-- A futuro enlaza esto a la ruta correcta de reset de contraseña --}}
-              </li> -->
+              </li>
               <li>
                 <form method="POST" action="{{ route('logout') }}">
                   @csrf
