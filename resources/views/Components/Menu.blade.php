@@ -80,14 +80,14 @@
             </a>
           </li>
 
-          @if (Route::has('register'))
+          <!-- @if (Route::has('register'))
           <li class="nav-item ms-lg-2">
             <a href="{{ route('register') }}" class="btn btn-sm fw-bold {{ request()->routeIs('register') ? 'active' : '' }}"
               style="background-color: var(--ColorSecundario); color: var(--TextoClaro) !important;">
               <i class="bi bi-person-plus-fill me-1"></i> Registrarse
             </a>
           </li>
-          @endif
+          @endif -->
           @endauth
         </ul>
       </div>

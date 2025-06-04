@@ -68,7 +68,7 @@ new #[Layout('Guest')] class extends Component
 
       <!-- Botones -->
       <div class="btn-spacing">
-        <a href="javascript:history.back()" class="btn btn-outline-secondary rounded-3 fw-semibold"
+        <a href="/" class="btn btn-outline-secondary rounded-3 fw-semibold"
           style="border-color: var(--ColorPrincipal); color: var(--ColorPrincipal);">
           <i class="fas fa-arrow-left me-1"></i> Volver atrás
         </a>
