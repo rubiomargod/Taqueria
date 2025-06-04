@@ -14,10 +14,12 @@ return new class extends Migration
     Schema::create('ventas', function (Blueprint $table) {
       $table->id();
       $table->foreignId('comanda_id')->constrained('comandas');
+      $table->foreignId('user_id')->constrained('users'); // 🔥 Nuevo campo
       $table->decimal('total', 10, 2);
       $table->timestamps();
     });
   }
+
 
   /**
    * Reverse the migrations.

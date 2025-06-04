@@ -11,16 +11,18 @@ class Ventas extends Model
 
   protected $table = 'ventas';
 
-  protected $fillable = [
-    'comanda_id',
-    'total',
-  ];
+  protected $fillable = ['comanda_id', 'total', 'user_id'];
 
   /**
    * Relación con la comanda.
    */
+  public function usuario()
+  {
+    return $this->belongsTo(\App\Models\User::class, 'user_id');
+  }
+
   public function comanda()
   {
-    return $this->belongsTo(Comanda::class);
+    return $this->belongsTo(\App\Models\Comanda::class, 'comanda_id');
   }
 }

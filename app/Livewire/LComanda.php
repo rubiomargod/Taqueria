@@ -151,16 +151,16 @@ class LComanda extends Component
     $this->dispatch('AbrirModalVenta');
   }
 
-
   public function confirmarVenta()
   {
     $comanda = Comanda::find($this->comandaId);
 
     if ($comanda) {
-      // Guardar venta
+      // Guardar venta con usuario autenticado
       Ventas::create([
         'comanda_id' => $comanda->id,
         'total' => $this->totalVenta,
+        'user_id' => Auth::id(), // ✅ Guarda el ID del usuario que realiza el cierre
       ]);
 
       // Cambiar estado de la comanda a "terminado"
@@ -170,11 +170,19 @@ class LComanda extends Component
 
     // Cerrar modal y limpiar datos
     $this->dispatch('CerrarModalVenta');
-    $this->reset(['comandaId', 'meseroNombre', 'mesaNumero', 'comandaFecha', 'comandaDetalles', 'totalVenta']);
+    $this->reset([
+      'comandaId',
+      'meseroNombre',
+      'mesaNumero',
+      'comandaFecha',
+      'comandaDetalles',
+      'totalVenta'
+    ]);
 
-    // Recargar comandas visibles (excluye las "terminado")
+    // Recargar comandas (solo las que no están terminadas)
     $this->loadComandas();
   }
+
 
   public function crearComanda()
   {
