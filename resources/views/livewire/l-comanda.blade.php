@@ -270,7 +270,7 @@
                   @endforeach
                 </select>
                 @error('mesaSeleccionada') <small class="text-danger">{{ $message }}</small> @enderror
-
+                @if (in_array(auth()->user()->role, ['Administrador']))
                 <div class="mt-2">
                   <button type="button" class="btn btn-link p-0 text-decoration-none fw-semibold"
                     style="color: var(--ColorPrincipal);"
@@ -290,6 +290,7 @@
                   </button>
                 </div>
                 @error('nuevoNumeroMesa') <small class="text-danger mt-1 d-block">{{ $message }}</small> @enderror
+                @endif
                 @endif
               </div>
             </div>
