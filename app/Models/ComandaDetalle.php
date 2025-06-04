@@ -5,21 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Comanda extends Model
+class ComandaDetalle extends Model
 {
   use HasFactory;
 
-  protected $table = 'comandas';
+  protected $table = 'comanda_detalle'; // ← este nombre es clave
 
-  protected $fillable = ['id_mesero', 'id_mesa', 'fecha'];
+  protected $fillable = ['id_comanda', 'id_producto', 'cantidad'];
 
-  public function mesero()
+  public function producto()
   {
-    return $this->belongsTo(User::class, 'id_mesero');
+    return $this->belongsTo(Producto::class, 'id_producto'); // ← clave foránea personalizada
   }
 
-  public function mesa()
+
+  public function comanda()
   {
-    return $this->belongsTo(Mesa::class, 'id_mesa');
+    return $this->belongsTo(Comanda::class, 'id_comanda');
   }
 }

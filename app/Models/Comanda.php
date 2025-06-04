@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Comanda extends Model
 {
   use HasFactory;
@@ -21,5 +22,9 @@ class Comanda extends Model
   public function mesa()
   {
     return $this->belongsTo(Mesa::class, 'id_mesa');
+  }
+  public function detalles()
+  {
+    return $this->hasMany(ComandaDetalle::class, 'id_comanda');
   }
 }
