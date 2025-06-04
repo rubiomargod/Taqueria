@@ -57,9 +57,9 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
               <li>
-                <a class="dropdown-item" href="{{ route('USUARIOS') }}">
+                <!-- <a class="dropdown-item" href="{{ route('USUARIOS') }}">
                   <i class="bi bi-key-fill me-1"></i> Restablecer contraseña
-                </a> {{-- A futuro enlaza esto a la ruta correcta de reset de contraseña --}}
+                </a> {{-- A futuro enlaza esto a la ruta correcta de reset de contraseña --}} -->
               </li>
               <li>
                 <form method="POST" action="{{ route('logout') }}">
