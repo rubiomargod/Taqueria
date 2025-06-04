@@ -5,78 +5,48 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Producto;
 use App\Models\Categoria;
-use Illuminate\Validation\Rule; // Importar para la regla unique
+use Illuminate\Validation\Rule;
 
 class LProductos extends Component
 {
-  // Propiedades principales para la tabla y filtros
   public $productos = [];
   public $categorias = [];
   public $categoriaSeleccionada = '';
 
-  // Propiedades del formulario del modal (Producto)
-  public $productoId = null; // null para nuevo, ID para editar
+  public $productoId = null;
   public $nombre, $precio, $id_categoria, $stock;
 
-  // Propiedades para la funcionalidad de agregar nueva categoría
-  public $newCategoriaNombre = ''; // <-- ¡CORREGIDO! Usar el mismo nombre que en el HTML
-  public $agregandoCategoria = false; // Controla la visibilidad del input de nueva categoría
+  public $newCategoriaNombre = '';
+  public $agregandoCategoria = false;
 
-  // Propiedad para el título del modal (simplificado)
-  // Ya no necesitas 'editando', 'productoId' se encarga de esto.
-  // public $editando = false; // Esta línea ya no es necesaria
-
-  // Hook: Se ejecuta cuando se actualiza la propiedad categoriaSeleccionada
   public function updatedCategoriaSeleccionada()
   {
     $this->cargarProductos();
   }
 
-  // Carga los productos según el filtro de categoría
   public function cargarProductos()
   {
     $this->productos = Producto::with('categoria')
       ->when($this->categoriaSeleccionada, function ($query) {
         $query->where('id_categoria', $this->categoriaSeleccionada);
       })
-      ->orderBy('nombre') // Opcional: ordenar productos
+      ->orderBy('nombre')
       ->get();
   }
 
-  // Hook: Se ejecuta al inicializar el componente
   public function mount()
   {
-    $this->loadCategorias(); // Carga las categorías al inicio
-    $this->cargarProductos(); // Carga los productos iniciales
+    $this->loadCategorias();
+    $this->cargarProductos();
   }
 
-  // Método auxiliar para cargar las categorías (mejorado)
   protected function loadCategorias()
   {
-    $this->categorias = Categoria::orderBy('nombre')->get(); // Ordenar por nombre para mejor UX
+    $this->categorias = Categoria::orderBy('nombre')->get();
   }
 
-  // Abre el modal para agregar un nuevo producto
   public function abrirModal()
   {
-    // Resetea todas las propiedades del formulario del producto y nueva categoría
-    $this->reset([
-      'productoId',
-      'nombre',
-      'precio',
-      'id_categoria',
-      'stock',
-      'newCategoriaNombre',
-      'agregandoCategoria'
-    ]);
-    $this->resetValidation(); // Limpia los errores de validación
-    $this->dispatch('AbrirModalProducto'); // Emite el evento para abrir el modal
-  }
-
-  // Cierra el modal
-  public function cerrarModal()
-  {
-    // Resetea todas las propiedades del formulario y errores
     $this->reset([
       'productoId',
       'nombre',
@@ -87,14 +57,28 @@ class LProductos extends Component
       'agregandoCategoria'
     ]);
     $this->resetValidation();
-    $this->dispatch('CerrarModalProducto'); // Emite el evento para cerrar el modal
+    $this->dispatch('AbrirModalProducto');
   }
 
-  // Edita un producto existente
+  public function cerrarModal()
+  {
+    $this->reset([
+      'productoId',
+      'nombre',
+      'precio',
+      'id_categoria',
+      'stock',
+      'newCategoriaNombre',
+      'agregandoCategoria'
+    ]);
+    $this->resetValidation();
+    $this->dispatch('CerrarModalProducto');
+  }
+
   public function editarProducto($id)
   {
-    $this->resetValidation(); // Limpia errores de validación anteriores
-    $this->agregandoCategoria = false; // Asegura que el campo de nueva categoría esté oculto al editar
+    $this->resetValidation();
+    $this->agregandoCategoria = false;
 
     $producto = Producto::findOrFail($id);
     $this->productoId = $producto->id;
@@ -103,10 +87,9 @@ class LProductos extends Component
     $this->id_categoria = $producto->id_categoria;
     $this->stock = $producto->stock;
 
-    $this->dispatch('AbrirModalProducto'); // Abre el modal
+    $this->dispatch('AbrirModalProducto');
   }
 
-  // Guarda un nuevo producto o actualiza uno existente
   public function guardarProducto()
   {
     $this->validate([
@@ -118,63 +101,68 @@ class LProductos extends Component
 
     try {
       if ($this->productoId) {
-        // Actualiza el producto existente
         Producto::findOrFail($this->productoId)->update([
           'nombre' => $this->nombre,
           'precio' => $this->precio,
           'id_categoria' => $this->id_categoria,
           'stock' => $this->stock,
         ]);
-        //session()->flash('message', 'Producto actualizado exitosamente!');
       } else {
-        // Crea un nuevo producto
         Producto::create([
           'nombre' => $this->nombre,
           'precio' => $this->precio,
           'id_categoria' => $this->id_categoria,
           'stock' => $this->stock,
         ]);
-        //session()->flash('message', 'Producto agregado exitosamente!');
       }
 
-      $this->cerrarModal(); // Cierra el modal
-      $this->cargarProductos(); // Recarga la lista de productos
+      $this->cerrarModal();
+      $this->cargarProductos();
     } catch (\Exception $e) {
-      //session()->flash('error', 'Error al guardar el producto: ' . $e->getMessage());
       \Log::error('Error al guardar producto: ' . $e->getMessage());
     }
   }
 
-  // Guarda una nueva categoría
   public function guardarNuevaCategoria()
   {
     $this->validate([
-      'newCategoriaNombre' => [ // <-- ¡CORREGIDO! Usar 'newCategoriaNombre'
+      'newCategoriaNombre' => [
         'required',
         'string',
         'max:100',
-        Rule::unique('categorias', 'nombre'),
+        Rule::unique('categorias', 'nombre')
       ],
     ], [
       'newCategoriaNombre.required' => 'El nombre de la categoría es obligatorio.',
-      'newCategoriaNombre.unique' => 'Esta categoría ya existe.',
+      'newCategoriaNombre.unique' => 'Esta categoría ya existe.'
     ]);
 
     try {
       $categoria = Categoria::create([
-        'nombre' => $this->newCategoriaNombre, // <-- ¡CORREGIDO! Usar 'newCategoriaNombre'
+        'nombre' => $this->newCategoriaNombre,
       ]);
 
-      $this->loadCategorias(); // Recarga la lista de categorías para el select
-      $this->id_categoria = $categoria->id; // Selecciona automáticamente la nueva categoría en el dropdown del producto
-      $this->newCategoriaNombre = ''; // Limpia el input de nueva categoría
-      $this->agregandoCategoria = false; // Oculta el campo de nueva categoría
-      $this->resetValidation('newCategoriaNombre'); // Limpia los errores de validación de este campo específico
-
-      //session()->flash('message', 'Categoría "' . $categoria->nombre . '" añadida exitosamente!');
+      $this->loadCategorias();
+      $this->id_categoria = $categoria->id;
+      $this->newCategoriaNombre = '';
+      $this->agregandoCategoria = false;
+      $this->resetValidation('newCategoriaNombre');
     } catch (\Exception $e) {
-      //session()->flash('error', 'Error al añadir la categoría: ' . $e->getMessage());
       \Log::error('Error al guardar nueva categoría: ' . $e->getMessage());
+    }
+  }
+
+  public function eliminarProducto($id)
+  {
+    try {
+      $producto = Producto::findOrFail($id);
+      $producto->delete();
+
+      $this->cargarProductos();
+      session()->flash('message', 'Producto eliminado correctamente.');
+    } catch (\Exception $e) {
+      \Log::error('Error al eliminar producto: ' . $e->getMessage());
+      session()->flash('error', 'Error al eliminar el producto.');
     }
   }
 

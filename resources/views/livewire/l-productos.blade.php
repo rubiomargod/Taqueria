@@ -59,9 +59,16 @@
             <td style="color: var(--TextoOscuro);">${{ number_format($producto->precio, 2) }}</td>
             <td style="color: var(--TextoOscuro);">{{ $producto->categoria->nombre ?? 'Sin categoría' }}</td>
             <td style="color: var(--TextoOscuro);">{{ $producto->stock }}</td>
-            <td class="text-center">
-              <button wire:click="editarProducto({{ $producto->id }})" class="btn btn-sm btn-primary" style="background-color: var(--ColorSecundario); color: var(--TextoOscuro);">
+            <td class="text-center d-flex gap-2 justify-content-center">
+              <button wire:click="editarProducto({{ $producto->id }})"
+                class="btn btn-sm btn-primary"
+                style="background-color: var(--ColorSecundario); color: var(--TextoOscuro);">
                 <i class="bi bi-pencil-fill"></i> Editar
+              </button>
+              <button wire:click="eliminarProducto({{ $producto->id }})"
+                onclick="confirm('¿Estás seguro de eliminar este producto?') || event.stopImmediatePropagation()"
+                class="btn btn-sm btn-danger">
+                <i class="bi bi-trash-fill"></i> Eliminar
               </button>
             </td>
           </tr>
@@ -130,7 +137,9 @@
                 @error('id_categoria') <small class="text-danger">{{ $message }}</small> @enderror
 
                 <div class="mt-3">
-                  <button type="button" class="btn btn-link p-0 text-decoration-none fw-semibold" style="color: var(--ColorPrincipal);" wire:click="$set('agregandoCategoria', true)">
+                  <button type="button" class="btn btn-link p-0 text-decoration-none fw-semibold"
+                    style="color: var(--ColorPrincipal);"
+                    wire:click="$set('agregandoCategoria', true)">
                     <i class="bi bi-plus-circle me-1"></i> ¿Añadir nueva categoría?
                   </button>
                 </div>
