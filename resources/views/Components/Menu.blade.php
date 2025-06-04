@@ -29,6 +29,7 @@
               <i class="bi bi-receipt-cutoff me-1"></i> Comandas
             </a>
           </li>
+          @if (in_array(auth()->user()->role, ['Administrador']))
           <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('USUARIOS') ? 'active' : '' }}" href="{{ route('USUARIOS') }}"
               style="color: var(--TextoClaro);">
@@ -41,6 +42,7 @@
               <i class="bi bi-box-seam-fill me-1"></i> Productos
             </a>
           </li>
+          @endif
           <li class="nav-item dropdown ms-lg-3">
             <a class="nav-link dropdown-toggle btn btn-sm text-white fw-bold" href="#" id="userDropdown" role="button"
               data-bs-toggle="dropdown" aria-expanded="false"

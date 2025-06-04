@@ -42,12 +42,17 @@ class LComanda extends Component
   public function loadComandas()
   {
     $user = Auth::user();
-    $query = Comanda::with(['mesero', 'mesa']);
+
+    $query = Comanda::with(['mesero', 'mesa'])
+      ->where('estado', '!=', 'terminado'); // excluir comandas terminadas
+
     if ($user->role === 'mesero') {
       $query->where('id_mesero', $user->id);
     }
+
     $this->comandas = $query->latest('fecha')->get();
   }
+
 
   public function loadMesas()
   {
@@ -120,9 +125,31 @@ class LComanda extends Component
 
   public function cerrarVenta($id)
   {
-    $this->AbrirModalDetalles($id);
+    $comanda = Comanda::with(['mesero', 'mesa', 'detalles.producto'])->findOrFail($id);
+
+    $this->comandaId = $comanda->id;
+    $this->meseroNombre = $comanda->mesero->name ?? 'N/A';
+    $this->mesaNumero = $comanda->mesa->numero ?? 'N/A';
+    $this->comandaFecha = $comanda->fecha;
+
+    // Cargar detalles en array para mostrar en el modal
+    $this->comandaDetalles = $comanda->detalles->map(function ($detalle) {
+      return [
+        'id' => $detalle->id,
+        'producto_id' => $detalle->producto_id,
+        'nombre' => $detalle->producto->nombre ?? 'N/A',
+        'precio' => $detalle->precio_unitario ?? $detalle->producto->precio ?? 0,
+        'cantidad' => $detalle->cantidad,
+      ];
+    })->toArray();
+
+    // Calcular total
+    $this->totalVenta = collect($this->comandaDetalles)->sum(fn($d) => $d['cantidad'] * $d['precio']);
+
+    // Mostrar modal
     $this->dispatch('AbrirModalVenta');
   }
+
 
   public function confirmarVenta()
   {
