@@ -64,7 +64,7 @@
           @else
           <li class="nav-item ms-lg-3">
             <a href="{{ route('login') }}" class="btn btn-sm text-white fw-bold {{ request()->routeIs('login') ? 'active' : '' }}"
-              style="background-color: var(--TextoClaro);">
+              style="background-color: var(--TextoOscuro);">
               <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
             </a>
           </li>
