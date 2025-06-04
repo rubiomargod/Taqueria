@@ -57,9 +57,9 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
               <li>
-                <a class="dropdown-item" href="{{ route('USUARIOS') }}">
+                <!-- <a class="dropdown-item" href="{{ route('USUARIOS') }}">
                   <i class="bi bi-key-fill me-1"></i> Restablecer contraseña
-                </a> {{-- A futuro enlaza esto a la ruta correcta de reset de contraseña --}}
+                </a> {{-- A futuro enlaza esto a la ruta correcta de reset de contraseña --}} -->
               </li>
               <li>
                 <form method="POST" action="{{ route('logout') }}">
@@ -80,14 +80,14 @@
             </a>
           </li>
 
-          @if (Route::has('register'))
+          <!-- @if (Route::has('register'))
           <li class="nav-item ms-lg-2">
             <a href="{{ route('register') }}" class="btn btn-sm fw-bold {{ request()->routeIs('register') ? 'active' : '' }}"
               style="background-color: var(--ColorSecundario); color: var(--TextoClaro) !important;">
               <i class="bi bi-person-plus-fill me-1"></i> Registrarse
             </a>
           </li>
-          @endif
+          @endif -->
           @endauth
         </ul>
       </div>

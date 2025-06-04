@@ -80,7 +80,7 @@ new #[Layout('Guest')] class extends Component
         <button type="submit" class="btn" style="background-color: var(--ColorPrincipal); color: var(--TextoClaro); font-weight: bold;">
           Registrarse
         </button>
-        <a href="javascript:history.back()" class="btn btn-outline-secondary">
+        <a href="/" class="btn btn-outline-secondary">
           <i class="fas fa-arrow-left me-1"></i> Volver atrás
         </a>
       </div>
