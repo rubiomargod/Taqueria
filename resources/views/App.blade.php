@@ -21,7 +21,7 @@
   @yield('auth-body')
   @else
   <div>
-    <link rel="stylesheet" href="{{ asset('IMG/Banner.jpg') }}">
+    <img src="{{ asset('IMG/Banner.png') }}" alt="">
   </div>
   @yield('guest-body')
   @endauth
