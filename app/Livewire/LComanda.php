@@ -6,6 +6,7 @@ use App\Models\Comanda;
 use App\Models\ComandaDetalle;
 use App\Models\Mesa;
 use App\Models\Producto;
+use App\Models\Ventas;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -153,8 +154,25 @@ class LComanda extends Component
 
   public function confirmarVenta()
   {
+    $comanda = Comanda::find($this->comandaId);
+
+    if ($comanda) {
+      // Guardar venta
+      Ventas::create([
+        'comanda_id' => $comanda->id,
+        'total' => $this->totalVenta,
+      ]);
+
+      // Cambiar estado de la comanda a "terminado"
+      $comanda->estado = 'terminado';
+      $comanda->save();
+    }
+
+    // Cerrar modal y limpiar datos
     $this->dispatch('CerrarModalVenta');
     $this->reset(['comandaId', 'meseroNombre', 'mesaNumero', 'comandaFecha', 'comandaDetalles', 'totalVenta']);
+
+    // Recargar comandas visibles (excluye las "terminado")
     $this->loadComandas();
   }
 
