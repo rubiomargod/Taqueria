@@ -1,7 +1,13 @@
+<<<<<<< Updated upstream
 <div class="p-4" style="background-color: var(--FondoBase);">
   <h2 class="h3 fw-bold mb-5 text-center" style="color: var(--TextoOscuro);">
     <i class="bi bi-journal-check me-2" style="color: var(--ColorPrincipal);"></i> Listado de Comandas
   </h2>
+=======
+<div class="p-4">
+  <link rel="stylesheet" href="{{ asset('CSS/comanda.css') }}">
+  <h2 class="text-xl font-bold mb-6">Listado de Comandas</h2>
+>>>>>>> Stashed changes
 
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
     @forelse($comandas as $comanda)
