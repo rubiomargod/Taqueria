@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Comanda;
 use App\Models\Producto;
+use App\Models\Ventas;
 use App\Models\ComandaDetalle;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,11 +14,15 @@ class LComanda extends Component
   public $comandas, $comandaId, $cantidad, $idProducto;
   public $meseroNombre, $mesaNumero, $comandaFecha;
   public $productosDisponibles, $comandaDetalles = [];
+  public $mostrarModalVenta = false;
+  public $totalVenta = 0;
+
 
   public function mount()
   {
     $user = Auth::user();
     $query = Comanda::with(['mesero', 'mesa']);
+    $this->comandas = $this->obtenerComandas();
 
     if ($user->role === 'mesero') {
       $query->where('id_mesero', $user->id);
@@ -134,8 +139,17 @@ class LComanda extends Component
       })->toArray();
     }
   }
-
-
+  public function cerrarVenta($id)
+  {
+    $this->comandaId = $id;
+    $this->cargarDetallesComanda();
+    // Calcular total
+    $this->totalVenta = collect($this->comandaDetalles)->sum(function ($d) {
+      return (float) $d['cantidad'] * (float) $d['precio'];
+    });
+    dd($this->totalVenta);
+    $this->dispatch('AbrirModalVenta');
+  }
   public function CerrarModalDetalles()
   {
     $this->reset([
@@ -148,5 +162,35 @@ class LComanda extends Component
       'comandaFecha',
     ]);
     $this->dispatch('CerrarModalDetalles');
+  }
+  public function confirmarVenta()
+  {
+    $comanda = Comanda::find($this->comandaId);
+    if (!$comanda) return;
+
+    // Cambiar estado
+    $comanda->estado = 'terminado';
+    $comanda->save();
+
+    // Registrar venta
+    Ventas::create([
+      'comanda_id' => $comanda->id,
+      'total' => $this->totalVenta,
+    ]);
+
+    $this->CerrarModalDetalles(); // Opcional
+    $this->dispatch('CerrarModalVenta');
+
+    $this->comandas = $this->obtenerComandas(); // Actualizar vista
+  }
+  private function obtenerComandas()
+  {
+    $query = Comanda::with(['mesero', 'mesa'])->where('estado', '!=', 'terminado');
+
+    if (Auth::user()->role === 'mesero') {
+      $query->where('id_mesero', Auth::id());
+    }
+
+    return $query->latest('fecha')->get();
   }
 }

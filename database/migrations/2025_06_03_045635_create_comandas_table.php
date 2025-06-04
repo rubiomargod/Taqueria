@@ -12,6 +12,7 @@ return new class extends Migration {
       $table->id();
       $table->unsignedBigInteger('id_mesero');
       $table->unsignedBigInteger('id_mesa');
+      $table->string('estado')->default('activo');
       $table->dateTime('fecha')->default(DB::raw('CURRENT_TIMESTAMP'));
       $table->timestamps();
 

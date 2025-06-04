@@ -160,4 +160,66 @@
       </div>
     </div>
   </div>
+  <div class="modal fade" id="ModalVenta" tabindex="-1" aria-labelledby="ModalVentaLabel" aria-hidden="true" wire:ignore.self>
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content shadow-lg rounded-4" style="background-color: var(--FondoBase);">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="ModalVentaLabel" style="color: var(--TextoOscuro);">
+            <i class="bi bi-receipt-cutoff me-2"></i> Ticket de Comanda #{{ $comandaId ?? 'N/A' }}
+          </h5>
+          <button type="button" class="btn-close" wire:click="$dispatch('CerrarModalVenta')" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="modal-body">
+          <p style="color: var(--TextoOscuro);">
+            <strong>Mesero:</strong> {{ $meseroNombre }} <br>
+            <strong>Mesa:</strong> #{{ $mesaNumero }} <br>
+            <strong>Fecha:</strong> {{ $comandaFecha }}
+          </p>
+
+          <table class="table table-sm table-borderless">
+            <thead>
+              <tr style="color: var(--ColorPrincipal);">
+                <th>Producto</th>
+                <th class="text-center">Cant.</th>
+                <th class="text-end">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($comandaDetalles as $detalle)
+              <tr style="color: var(--TextoOscuro);">
+                <td>{{ $detalle['nombre'] }}</td>
+                <td class="text-center">{{ $detalle['cantidad'] }}</td>
+                <td class="text-end">${{ number_format($detalle['cantidad'] * $detalle['precio'], 2) }}</td>
+              </tr>
+              @endforeach
+            </tbody>
+            <tfoot>
+              <tr style="color: var(--ColorAcento); font-weight: bold;">
+                <td colspan="2" class="text-end">Total:</td>
+                <td class="text-end">${{ number_format($totalVenta, 2) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <div class="modal-footer border-0">
+          <button class="btn btn-success" wire:click="confirmarVenta">
+            <i class="bi bi-cash-coin me-1"></i> Confirmar Venta
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      Livewire.on('AbrirModalVenta', () => {
+        new bootstrap.Modal(document.getElementById('ModalVenta')).show();
+      });
+      Livewire.on('CerrarModalVenta', () => {
+        let modal = bootstrap.Modal.getInstance(document.getElementById('ModalVenta'));
+        modal.hide();
+      });
+    });
+  </script>
 </div>
