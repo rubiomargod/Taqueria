@@ -105,10 +105,36 @@ class LComanda extends Component
   {
     $detalle = ComandaDetalle::find($detalleId);
 
-    if ($detalle && $detalle->id == $this->comandaId) {
-      $detalle->delete();
+    if (!$detalle) return;
+
+    // Opcional: devolver el stock eliminado al producto
+    $producto = Producto::find($detalle->id_producto);
+    if ($producto) {
+      $producto->stock += $detalle->cantidad;
+      $producto->save();
+    }
+
+    $detalle->delete();
+
+    // Volver a cargar detalles
+    $this->cargarDetallesComanda();
+  }
+  public function cargarDetallesComanda()
+  {
+    if ($this->comandaId) {
+      $comanda = Comanda::with('detalles.producto')->find($this->comandaId);
+      $this->comandaDetalles = $comanda->detalles->map(function ($detalle) {
+        return [
+          'id' => $detalle->id,
+          'producto_id' => $detalle->producto_id,
+          'nombre' => $detalle->producto->nombre ?? 'N/A',
+          'precio' => $detalle->precio_unitario,
+          'cantidad' => $detalle->cantidad,
+        ];
+      })->toArray();
     }
   }
+
 
   public function CerrarModalDetalles()
   {
