@@ -37,7 +37,7 @@ class LComanda extends Component
           'id' => $detalle->id,
           'producto_id' => $detalle->producto_id,
           'nombre' => $detalle->producto->nombre ?? 'N/A',
-          'precio' => $detalle->precio_unitario,
+          'precio' => $detalle->producto->precio ?? 0,
           'cantidad' => $detalle->cantidad,
         ];
       });
@@ -76,8 +76,9 @@ class LComanda extends Component
 
     // Verificar si ya existe un detalle con ese producto
     $detalleExistente = ComandaDetalle::where('id', $this->comandaId)
-      ->where('producto_id', $producto->id)
+      ->where('id_producto', $producto->id)
       ->first();
+
 
     if ($detalleExistente) {
       $nuevaCantidad = $detalleExistente->cantidad + $this->cantidad;
@@ -90,8 +91,8 @@ class LComanda extends Component
       $detalleExistente->update(['cantidad' => $nuevaCantidad]);
     } else {
       ComandaDetalle::create([
-        'id' => $this->comandaId,
-        'producto_id' => $producto->id,
+        'id_comanda' => $this->comandaId,  // <--- Esto es obligatorio
+        'id_producto' => $producto->id,
         'cantidad' => $this->cantidad,
         'precio_unitario' => $producto->precio,
       ]);
